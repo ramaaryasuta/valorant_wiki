@@ -1,6 +1,6 @@
-# valorant_wiki
+# Valorant Wiki Flutter App
 
-A new Flutter project.
+Simple app that shows agent from valorant, and another information (SOON MAYBE)
 
 ## Getting Started
 
