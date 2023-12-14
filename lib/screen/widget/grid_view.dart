@@ -94,9 +94,13 @@ class CardAgent extends StatelessWidget {
                   ),
                 ),
               ),
-              child: Text(
-                name.toUpperCase(),
-                style: const TextStyle(fontWeight: FontWeight.bold),
+              child: Row(
+                children: [
+                  Text(
+                    name.toUpperCase(),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
               ),
             ),
           ],

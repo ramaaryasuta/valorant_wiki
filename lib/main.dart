@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'screen/agent.dart';
 import 'screen/detail.dart';
 import 'screen/splash.dart';
 
@@ -28,8 +27,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/splash',
       routes: {
         '/splash': (context) => const SplashScreen(),
-        '/': (context) => AgentScreens(),
-        '/detail-agent': (context) => DetailAgentScreen(),
+        '/detail-agent': (context) => const DetailAgentScreen(),
       },
     );
   }

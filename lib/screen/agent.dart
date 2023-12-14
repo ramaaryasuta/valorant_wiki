@@ -1,30 +1,21 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:http/http.dart' as http;
 
 import 'widget/grid_view.dart';
-import 'widget/text_field.dart';
 
+// ignore: must_be_immutable
 class AgentScreens extends StatefulWidget {
-  AgentScreens({super.key});
+  AgentScreens({super.key, required this.agentDataOriginal});
+
+  List agentDataOriginal;
 
   @override
   State<AgentScreens> createState() => _AgentScreensState();
 }
 
 class _AgentScreensState extends State<AgentScreens> {
+  late List agent = widget.agentDataOriginal;
   final TextEditingController _searchController = TextEditingController();
-
-  late List searchData;
-
-  List searchAgent(String query) {
-    query = query.toLowerCase();
-    return searchData
-        .where((agent) => agent['displayName'].toLowerCase().contain(query))
-        .toList();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +41,7 @@ class _AgentScreensState extends State<AgentScreens> {
                   controller: _searchController,
                   onChanged: (value) {
                     setState(() {
-                      searchAgent(value);
+                      agent = searchAgent(value);
                     });
                   },
                   decoration: InputDecoration(
@@ -64,7 +55,7 @@ class _AgentScreensState extends State<AgentScreens> {
                   ),
                 ),
               ),
-              listAgentBuilder()
+              GridAgentView(dataAgent: agent),
             ],
           ),
         ),
@@ -72,43 +63,18 @@ class _AgentScreensState extends State<AgentScreens> {
     );
   }
 
-  FutureBuilder<dynamic> listAgentBuilder() {
-    return FutureBuilder(
-      future: getAgentData(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done &&
-            snapshot.hasData) {
-          searchData = snapshot.data as List;
-
-          return GridAgentView(
-            dataAgent: _searchController.value.text.isEmpty
-                ? searchData
-                : snapshot.data,
-          );
-        } else {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-      },
-    );
-  }
-
-  Future getAgentData() async {
-    final url = Uri.parse('https://valorant-api.com/v1/agents');
-    final response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      var data = json.decode(response.body)['data'] as List;
-
-      // from APi recommend use filterplayable Char
-      var finalData = data
-          .where((element) => element['isPlayableCharacter'] == true)
+  // search function
+  List searchAgent(String query) {
+    if (query.isNotEmpty) {
+      agent = widget.agentDataOriginal
+          .where((element) => element['displayName']
+              .toLowerCase()
+              .contains(query.toLowerCase()))
           .toList();
-
-      return finalData;
+      return agent;
     } else {
-      return 'Error';
+      agent = widget.agentDataOriginal;
+      return agent;
     }
   }
 }
